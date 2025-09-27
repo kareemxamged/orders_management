@@ -2,7 +2,7 @@ module.exports = {
     apps: [{
         name: 'order-system',
         script: 'npm',
-        args: 'run preview -- --host 0.0.0.0 --port 4173',
+        args: 'run preview -- --host 0.0.0.0 --port 4176',
         cwd: '/var/www/orders_sys',
         instances: 1,
         autorestart: true,

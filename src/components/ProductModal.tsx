@@ -19,12 +19,14 @@ const productSchema = z.object({
   sale_price: z.union([
     z.number().min(0, 'السعر المخفض يجب أن يكون أكبر من أو يساوي صفر'),
     z.literal(''),
-    z.undefined()
+    z.undefined(),
+    z.null()
   ]).optional(),
   discount_percentage: z.union([
-    z.number().min(0, 'نسبة التخفيض يجب أن تكون أكبر من أو تساوي صفر').max(100, 'نسبة التخفيض يجب أن تكون أقل من أو تساوي 100'),
+    z.number().min(0, 'نسبة التخفيض يجب أن تكون أكبر من أو تساوي صفر').max(100, 'نسبة التخفيض يجب أن تكون أقل من أو تساوي 100%'),
     z.literal(''),
-    z.undefined()
+    z.undefined(),
+    z.null()
   ]).optional(),
   is_active: z.boolean().default(true),
 })
@@ -147,28 +149,46 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
 
   // Auto-calculate when price or discount percentage changes
   React.useEffect(() => {
-    if (discountType === 'percentage' && watchedPrice && watchedDiscountPercentage && String(watchedDiscountPercentage) !== '') {
-      const salePrice = calculateSalePrice(watchedPrice, Number(watchedDiscountPercentage))
-      setValue('sale_price', Math.round(salePrice * 100) / 100)
+    if (discountType === 'percentage' && watchedPrice && watchedDiscountPercentage !== undefined && watchedDiscountPercentage !== null && watchedDiscountPercentage !== '') {
+      const percentage = Number(watchedDiscountPercentage)
+      if (!isNaN(percentage) && percentage >= 0 && percentage <= 100) {
+        const salePrice = calculateSalePrice(watchedPrice, percentage)
+        const roundedSalePrice = Math.round(salePrice * 100) / 100
+        // فقط حدث إذا كان السعر مختلف
+        if (watchedSalePrice !== roundedSalePrice) {
+          setValue('sale_price', roundedSalePrice)
+        }
+      }
     }
-  }, [watchedPrice, watchedDiscountPercentage, discountType, setValue])
+  }, [watchedPrice, watchedDiscountPercentage, discountType, setValue, watchedSalePrice])
 
   // Auto-calculate when price or sale price changes
   React.useEffect(() => {
-    if (discountType === 'fixed' && watchedPrice && watchedSalePrice && String(watchedSalePrice) !== '') {
-      const percentage = calculateDiscountPercentage(watchedPrice, Number(watchedSalePrice))
-      setValue('discount_percentage', Math.round(percentage * 100) / 100)
+    if (discountType === 'fixed' && watchedPrice && watchedSalePrice !== undefined && watchedSalePrice !== null && watchedSalePrice !== '') {
+      const salePrice = Number(watchedSalePrice)
+      if (!isNaN(salePrice) && salePrice >= 0) {
+        const percentage = calculateDiscountPercentage(watchedPrice, salePrice)
+        const roundedPercentage = Math.round(percentage * 100) / 100
+        // فقط حدث إذا كانت النسبة مختلفة
+        if (watchedDiscountPercentage !== roundedPercentage) {
+          setValue('discount_percentage', roundedPercentage)
+        }
+      }
     }
-  }, [watchedPrice, watchedSalePrice, discountType, setValue])
+  }, [watchedPrice, watchedSalePrice, discountType, setValue, watchedDiscountPercentage])
 
   // Calculate final price for display
   const getFinalPrice = () => {
     if (!watchedPrice) return 0
     
-    if (discountType === 'fixed' && watchedSalePrice && String(watchedSalePrice) !== '') {
-      return Number(watchedSalePrice)
-    } else if (discountType === 'percentage' && watchedDiscountPercentage && String(watchedDiscountPercentage) !== '') {
-      return calculateSalePrice(watchedPrice, Number(watchedDiscountPercentage))
+    if (discountType === 'fixed' && watchedSalePrice !== undefined && watchedSalePrice !== null && watchedSalePrice !== '') {
+      const salePrice = Number(watchedSalePrice)
+      return !isNaN(salePrice) && salePrice >= 0 ? salePrice : watchedPrice
+    } else if (discountType === 'percentage' && watchedDiscountPercentage !== undefined && watchedDiscountPercentage !== null && watchedDiscountPercentage !== '') {
+      const percentage = Number(watchedDiscountPercentage)
+      if (!isNaN(percentage) && percentage >= 0 && percentage <= 100) {
+        return calculateSalePrice(watchedPrice, percentage)
+      }
     }
     
     return watchedPrice
@@ -374,28 +394,33 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
                         السعر المخفض (ر.س)
                       </label>
                       <input
-                        {...register('sale_price', { 
-                          setValueAs: (value) => {
-                            if (value === '' || value === null || value === undefined) {
-                              return ''
-                            }
-                            const num = Number(value)
-                            return isNaN(num) ? '' : num
-                          }
-                        })}
                         type="number"
                         step="0.01"
                         min="0"
                         className="input"
-                        placeholder="اتركه فارغاً لإلغاء التخفيض"
+                        placeholder="مثال: 85.50"
+                        value={watchedSalePrice !== undefined && watchedSalePrice !== null && watchedSalePrice !== '' 
+                          ? watchedSalePrice 
+                          : ''}
+                        onChange={(e) => {
+                          const value = e.target.value
+                          if (value === '' || value === null || value === undefined) {
+                            setValue('sale_price', undefined)
+                          } else {
+                            const num = parseFloat(value)
+                            if (!isNaN(num) && num >= 0) {
+                              setValue('sale_price', num)
+                            }
+                          }
+                        }}
                       />
                       {errors.sale_price && (
                         <p className="mt-1 text-sm text-red-600">{errors.sale_price.message}</p>
                       )}
                       {watchedPrice && (
                         <p className="mt-1 text-xs text-gray-500">
-                          نسبة التخفيض: {watchedSalePrice && String(watchedSalePrice) !== '' && Number(watchedSalePrice) > 0 
-                            ? Math.round(((watchedPrice - Number(watchedSalePrice)) / watchedPrice) * 100)
+                          نسبة التخفيض: {watchedSalePrice !== undefined && watchedSalePrice !== null && watchedSalePrice !== '' && Number(watchedSalePrice) > 0 
+                            ? Math.round(((watchedPrice - Number(watchedSalePrice)) / watchedPrice) * 100 * 100) / 100
                             : 0}%
                         </p>
                       )}
@@ -406,28 +431,33 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
                         نسبة التخفيض (%)
                       </label>
                       <input
-                        {...register('discount_percentage', { 
-                          setValueAs: (value) => {
-                            if (value === '' || value === null || value === undefined) {
-                              return ''
-                            }
-                            const num = Number(value)
-                            return isNaN(num) ? '' : num
-                          }
-                        })}
                         type="number"
                         step="0.01"
                         min="0"
                         max="100"
                         className="input"
-                        placeholder="اتركه فارغاً لإلغاء التخفيض"
+                        placeholder="مثال: 15.5"
+                        value={watchedDiscountPercentage !== undefined && watchedDiscountPercentage !== null && watchedDiscountPercentage !== '' 
+                          ? watchedDiscountPercentage 
+                          : ''}
+                        onChange={(e) => {
+                          const value = e.target.value
+                          if (value === '' || value === null || value === undefined) {
+                            setValue('discount_percentage', undefined)
+                          } else {
+                            const num = parseFloat(value)
+                            if (!isNaN(num) && num >= 0 && num <= 100) {
+                              setValue('discount_percentage', num)
+                            }
+                          }
+                        }}
                       />
                       {errors.discount_percentage && (
                         <p className="mt-1 text-sm text-red-600">{errors.discount_percentage.message}</p>
                       )}
                       {watchedPrice && (
                         <p className="mt-1 text-xs text-gray-500">
-                          السعر المخفض: {watchedDiscountPercentage && String(watchedDiscountPercentage) !== '' && Number(watchedDiscountPercentage) > 0
+                          السعر المخفض: {watchedDiscountPercentage !== undefined && watchedDiscountPercentage !== null && watchedDiscountPercentage !== '' && Number(watchedDiscountPercentage) > 0
                             ? Math.round((watchedPrice - (watchedPrice * Number(watchedDiscountPercentage) / 100)) * 100) / 100
                             : watchedPrice} ر.س
                         </p>
