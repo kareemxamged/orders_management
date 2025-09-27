@@ -8,14 +8,13 @@ module.exports = {
         autorestart: true,
         watch: false,
         max_memory_restart: '1G',
-        env: {
-            NODE_ENV: 'production',
-            // استبدل هذه القيم ببيانات Supabase الصحيحة
-            VITE_SUPABASE_URL: 'https://your-project.supabase.co',
-            VITE_SUPABASE_ANON_KEY: 'your_anon_key_here',
-            VITE_APP_NAME: 'نظام إدارة الطلبات',
-            VITE_APP_VERSION: '1.0.0'
-        },
+    env: {
+      NODE_ENV: 'production',
+      VITE_SUPABASE_URL: 'https://tcmohnvzuguerxgcppus.supabase.co',
+      VITE_SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRjbW9obnZ6dWd1ZXJ4Z2NwcHVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg4OTA0NzMsImV4cCI6MjA3NDQ2NjQ3M30.VXBapGKtHFgteoTOA4P5OnNFHNVAM2Vb_DD2pbeTgH0',
+      VITE_APP_NAME: 'Orders_Management_sys',
+      VITE_APP_VERSION: '1.0.0'
+    },
         env_production: {
             NODE_ENV: 'production'
         },
