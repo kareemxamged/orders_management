@@ -3,7 +3,7 @@ module.exports = {
         name: 'order-system',
         script: 'npm',
         args: 'run preview -- --host 0.0.0.0 --port 4173',
-        cwd: '/root/orders_sys',
+        cwd: '/var/www/orders_sys',
         instances: 1,
         autorestart: true,
         watch: false,
@@ -18,9 +18,9 @@ module.exports = {
         env_production: {
             NODE_ENV: 'production'
         },
-        error_file: '/root/orders_sys/logs/err.log',
-        out_file: '/root/orders_sys/logs/out.log',
-        log_file: '/root/orders_sys/logs/combined.log',
+        error_file: '/var/www/orders_sys/logs/err.log',
+        out_file: '/var/www/orders_sys/logs/out.log',
+        log_file: '/var/www/orders_sys/logs/combined.log',
         time: true
     }]
 }
