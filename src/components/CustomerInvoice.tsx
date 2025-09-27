@@ -14,7 +14,7 @@ interface CustomerInvoiceProps {
 
 const CustomerInvoice: React.FC<CustomerInvoiceProps> = ({ order }) => {
   return (
-    <div className="min-h-screen bg-white p-4 sm:p-6 lg:p-8 print:p-4">
+    <div id="invoice-content" className="min-h-screen bg-white p-4 sm:p-6 lg:p-8 print:p-4">
       {/* Header */}
       <div className="mb-8 sm:mb-10 lg:mb-12 print:mb-8">
         <div className="text-center">
