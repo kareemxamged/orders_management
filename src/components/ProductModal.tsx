@@ -135,28 +135,40 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
 
   // Handle discount type change
   const handleDiscountTypeChange = (type: 'fixed' | 'percentage') => {
+    console.log('🔍 handleDiscountTypeChange - Changing to:', type, 'watchedPrice:', watchedPrice, 'watchedSalePrice:', watchedSalePrice, 'watchedDiscountPercentage:', watchedDiscountPercentage)
     setDiscountType(type)
     if (type === 'percentage' && watchedPrice && watchedSalePrice) {
       const percentage = calculateDiscountPercentage(watchedPrice, watchedSalePrice)
-      setValue('discount_percentage', Math.round(percentage * 100) / 100)
-      setValue('sale_price', undefined)
+      const roundedPercentage = Math.round(percentage * 100) / 100
+      console.log('🔍 Setting discount_percentage to:', roundedPercentage)
+      setValue('discount_percentage', roundedPercentage, { shouldDirty: false })
+      setValue('sale_price', undefined, { shouldDirty: false })
     } else if (type === 'fixed' && watchedPrice && watchedDiscountPercentage) {
       const salePrice = calculateSalePrice(watchedPrice, watchedDiscountPercentage)
-      setValue('sale_price', Math.round(salePrice * 100) / 100)
-      setValue('discount_percentage', undefined)
+      const roundedSalePrice = Math.round(salePrice * 100) / 100
+      console.log('🔍 Setting sale_price to:', roundedSalePrice)
+      setValue('sale_price', roundedSalePrice, { shouldDirty: false })
+      setValue('discount_percentage', undefined, { shouldDirty: false })
     }
   }
 
   // Auto-calculate when price or discount percentage changes
   React.useEffect(() => {
+    console.log('🔍 useEffect percentage - discountType:', discountType, 'watchedPrice:', watchedPrice, 'watchedDiscountPercentage:', watchedDiscountPercentage)
+    
     if (discountType === 'percentage' && watchedPrice && watchedDiscountPercentage !== undefined && watchedDiscountPercentage !== null) {
       const percentage = Number(watchedDiscountPercentage)
+      console.log('🔍 Percentage calculation - percentage:', percentage, 'isNaN:', isNaN(percentage), 'range check:', percentage >= 0 && percentage <= 100)
+      
       if (!isNaN(percentage) && percentage >= 0 && percentage <= 100) {
         const salePrice = calculateSalePrice(watchedPrice, percentage)
         const roundedSalePrice = Math.round(salePrice * 100) / 100
-        // فقط حدث إذا كان السعر مختلف بشكل كبير
+        console.log('🔍 Sale price calculation - salePrice:', salePrice, 'roundedSalePrice:', roundedSalePrice, 'watchedSalePrice:', watchedSalePrice)
+        
+        // فقط حدث إذا كان السعر مختلف بشكل كبير ولا يوجد تحديث متزامن
         if (Math.abs((watchedSalePrice || 0) - roundedSalePrice) > 0.01) {
-          setValue('sale_price', roundedSalePrice)
+          console.log('🔍 Updating sale_price to:', roundedSalePrice)
+          setValue('sale_price', roundedSalePrice, { shouldDirty: false })
         }
       }
     }
@@ -169,9 +181,9 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
       if (!isNaN(salePrice) && salePrice >= 0) {
         const percentage = calculateDiscountPercentage(watchedPrice, salePrice)
         const roundedPercentage = Math.round(percentage * 100) / 100
-        // فقط حدث إذا كانت النسبة مختلفة بشكل كبير
+        // فقط حدث إذا كانت النسبة مختلفة بشكل كبير ولا يوجد تحديث متزامن
         if (Math.abs((watchedDiscountPercentage || 0) - roundedPercentage) > 0.01) {
-          setValue('discount_percentage', roundedPercentage)
+          setValue('discount_percentage', roundedPercentage, { shouldDirty: false })
         }
       }
     }
@@ -179,18 +191,25 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
 
   // Calculate final price for display
   const getFinalPrice = () => {
+    console.log('🔍 getFinalPrice - watchedPrice:', watchedPrice, 'discountType:', discountType, 'watchedSalePrice:', watchedSalePrice, 'watchedDiscountPercentage:', watchedDiscountPercentage)
+    
     if (!watchedPrice) return 0
     
     if (discountType === 'fixed' && watchedSalePrice !== undefined && watchedSalePrice !== null) {
       const salePrice = Number(watchedSalePrice)
+      console.log('🔍 Fixed discount - salePrice:', salePrice, 'isNaN:', isNaN(salePrice))
       return !isNaN(salePrice) && salePrice >= 0 ? salePrice : watchedPrice
     } else if (discountType === 'percentage' && watchedDiscountPercentage !== undefined && watchedDiscountPercentage !== null) {
       const percentage = Number(watchedDiscountPercentage)
+      console.log('🔍 Percentage discount - percentage:', percentage, 'isNaN:', isNaN(percentage))
       if (!isNaN(percentage) && percentage >= 0 && percentage <= 100) {
-        return calculateSalePrice(watchedPrice, percentage)
+        const finalPrice = calculateSalePrice(watchedPrice, percentage)
+        console.log('🔍 Final price calculated:', finalPrice)
+        return finalPrice
       }
     }
     
+    console.log('🔍 Returning original price:', watchedPrice)
     return watchedPrice
   }
 
@@ -428,11 +447,15 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
                       <input
                         {...register('discount_percentage', {
                           setValueAs: (value) => {
+                            console.log('🔍 setValueAs discount_percentage - Original value:', value, 'Type:', typeof value)
                             if (value === '' || value === null || value === undefined) {
+                              console.log('🔍 Returning undefined for empty value')
                               return undefined
                             }
                             const num = parseFloat(value)
-                            return isNaN(num) ? undefined : num
+                            const result = isNaN(num) ? undefined : num
+                            console.log('🔍 Parsed number:', num, 'Result:', result)
+                            return result
                           }
                         })}
                         type="number"
@@ -441,6 +464,9 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
                         max="100"
                         className="input"
                         placeholder="مثال: 15.5"
+                        onChange={(e) => {
+                          console.log('🔍 onChange discount_percentage - Raw value:', e.target.value)
+                        }}
                       />
                       {errors.discount_percentage && (
                         <p className="mt-1 text-sm text-red-600">{errors.discount_percentage.message}</p>
