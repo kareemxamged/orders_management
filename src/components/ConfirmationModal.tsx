@@ -59,7 +59,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
     }
   }
 
-  const { icon, bgColor, borderColor, buttonColor } = getIconAndColors()
+  const { icon, bgColor, buttonColor } = getIconAndColors()
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">

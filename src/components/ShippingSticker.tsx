@@ -1,13 +1,10 @@
 import React from 'react'
 import { Order } from '@/types'
-import { formatDate, formatCurrency } from '@/utils'
+import { formatCurrency } from '@/utils'
 import { 
   Package, 
-  Truck, 
   MapPin, 
   Phone, 
-  Calendar,
-  User,
   Building2
 } from 'lucide-react'
 

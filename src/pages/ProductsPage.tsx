@@ -14,7 +14,7 @@ import {
   Upload,
   CheckSquare,
   Square,
-  X,
+  // X,
   AlertTriangle
 } from 'lucide-react'
 import { formatCurrency, searchIncludes, exportProductsToCSV, parseCSVFileSmart, validateProductData, extractProductsFromSpecificCSV, validateSpecificProductData } from '@/utils'
@@ -215,7 +215,7 @@ const ProductsPage: React.FC = () => {
 
   const bulkToggleActiveMutation = useMutation({
     mutationFn: async ({ productIds, isActive }: { productIds: string[], isActive: boolean }) => {
-      const promises = productIds.map(id => productsApi.update(id, { is_active: isActive }))
+      const promises = productIds.map(id => productsApi.update(id, { is_active: isActive } as any))
       await Promise.all(promises)
     },
     onSuccess: (_, { isActive }) => {

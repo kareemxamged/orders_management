@@ -29,7 +29,7 @@ const CategoryModal: React.FC<CategoryModalProps> = ({ category, isOpen, onClose
 
   const { data: parentCategories } = useQuery({
     queryKey: ['categories', { parent_id: null }],
-    queryFn: () => categoriesApi.getAll({ parent_id: null }),
+    queryFn: () => categoriesApi.getAll({ parent_id: undefined }),
   })
 
   const {

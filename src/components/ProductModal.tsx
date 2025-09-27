@@ -147,7 +147,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
 
   // Auto-calculate when price or discount percentage changes
   React.useEffect(() => {
-    if (discountType === 'percentage' && watchedPrice && watchedDiscountPercentage && watchedDiscountPercentage !== '') {
+    if (discountType === 'percentage' && watchedPrice && watchedDiscountPercentage && String(watchedDiscountPercentage) !== '') {
       const salePrice = calculateSalePrice(watchedPrice, Number(watchedDiscountPercentage))
       setValue('sale_price', Math.round(salePrice * 100) / 100)
     }
@@ -155,7 +155,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
 
   // Auto-calculate when price or sale price changes
   React.useEffect(() => {
-    if (discountType === 'fixed' && watchedPrice && watchedSalePrice && watchedSalePrice !== '') {
+    if (discountType === 'fixed' && watchedPrice && watchedSalePrice && String(watchedSalePrice) !== '') {
       const percentage = calculateDiscountPercentage(watchedPrice, Number(watchedSalePrice))
       setValue('discount_percentage', Math.round(percentage * 100) / 100)
     }
@@ -165,9 +165,9 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
   const getFinalPrice = () => {
     if (!watchedPrice) return 0
     
-    if (discountType === 'fixed' && watchedSalePrice && watchedSalePrice !== '') {
+    if (discountType === 'fixed' && watchedSalePrice && String(watchedSalePrice) !== '') {
       return Number(watchedSalePrice)
-    } else if (discountType === 'percentage' && watchedDiscountPercentage && watchedDiscountPercentage !== '') {
+    } else if (discountType === 'percentage' && watchedDiscountPercentage && String(watchedDiscountPercentage) !== '') {
       return calculateSalePrice(watchedPrice, Number(watchedDiscountPercentage))
     }
     
@@ -394,7 +394,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
                       )}
                       {watchedPrice && (
                         <p className="mt-1 text-xs text-gray-500">
-                          نسبة التخفيض: {watchedSalePrice && watchedSalePrice !== '' && Number(watchedSalePrice) > 0 
+                          نسبة التخفيض: {watchedSalePrice && String(watchedSalePrice) !== '' && Number(watchedSalePrice) > 0 
                             ? Math.round(((watchedPrice - Number(watchedSalePrice)) / watchedPrice) * 100)
                             : 0}%
                         </p>
@@ -427,7 +427,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
                       )}
                       {watchedPrice && (
                         <p className="mt-1 text-xs text-gray-500">
-                          السعر المخفض: {watchedDiscountPercentage && watchedDiscountPercentage !== '' && Number(watchedDiscountPercentage) > 0
+                          السعر المخفض: {watchedDiscountPercentage && String(watchedDiscountPercentage) !== '' && Number(watchedDiscountPercentage) > 0
                             ? Math.round((watchedPrice - (watchedPrice * Number(watchedDiscountPercentage) / 100)) * 100) / 100
                             : watchedPrice} ر.س
                         </p>

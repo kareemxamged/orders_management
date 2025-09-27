@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { X, Save, AlertCircle, Tag, Percent } from 'lucide-react'
-import { Discount, DiscountType, CreateDiscountForm } from '@/types'
+import { Discount, CreateDiscountForm } from '@/types'
 
 const discountSchema = z.object({
   code: z.string().min(1, 'كود الكوبون مطلوب').max(50, 'كود الكوبون يجب أن يكون أقل من 50 حرف'),
@@ -44,7 +44,7 @@ const DiscountModal: React.FC<DiscountModalProps> = ({
     formState: { errors },
     reset,
     watch,
-    setValue
+    // setValue
   } = useForm<DiscountFormData>({
     resolver: zodResolver(discountSchema),
     defaultValues: {
@@ -80,7 +80,7 @@ const DiscountModal: React.FC<DiscountModalProps> = ({
   }, [discount, reset])
 
   const onSubmit = (data: DiscountFormData) => {
-    onSave(data)
+    onSave(data as CreateDiscountForm)
   }
 
   const handleClose = () => {

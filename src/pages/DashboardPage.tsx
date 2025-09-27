@@ -1,7 +1,7 @@
 import React from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { dashboardApi } from '@/services/api'
-import { formatCurrency, formatRelativeTime, getOrderStatusColor, getOrderStatusText } from '@/utils'
+import { formatCurrency, formatRelativeTime } from '@/utils'
 import {
   ShoppingCart,
   DollarSign,

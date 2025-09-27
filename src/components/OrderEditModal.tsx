@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { X, Save, AlertCircle } from 'lucide-react'
-import { Order, OrderStatus } from '@/types'
+import { Order } from '@/types'
 import { getOrderStatusColor, getOrderStatusText } from '@/utils'
 
 const orderEditSchema = z.object({

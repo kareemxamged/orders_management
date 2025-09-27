@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { productsApi } from '@/services/api'
-import { Category, Product } from '@/types'
+import { Category } from '@/types'
 import { X, Package, Plus, Trash2, CheckSquare, Square } from 'lucide-react'
 import { formatCurrency } from '@/utils'
 import toast from 'react-hot-toast'

@@ -1,16 +1,10 @@
 import React from 'react'
 import { Order } from '@/types'
-import { formatDate, formatCurrency, getOrderStatusText } from '@/utils'
+import { formatDate, formatCurrency } from '@/utils'
 import { 
-  Building2, 
-  Phone, 
-  Mail, 
-  MapPin, 
-  Calendar, 
   Package, 
   DollarSign,
-  FileText,
-  User
+  FileText
 } from 'lucide-react'
 import QRCodeGenerator from './QRCodeGenerator'
 
@@ -108,7 +102,7 @@ const CustomerInvoice: React.FC<CustomerInvoiceProps> = ({ order }) => {
                       <div className="font-bold text-gray-900">{item.product?.name}</div>
                       {item.product?.categories && item.product.categories.length > 0 && (
                         <div className="text-gray-600 text-xs sm:text-sm mt-1 print:text-xs">
-                          {item.product.categories[0].category.name}
+                          {item.product.categories?.[0]?.category?.name}
                         </div>
                       )}
                     </div>

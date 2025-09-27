@@ -1,6 +1,6 @@
 import React from 'react'
 import { Customer } from '@/types'
-import { X, User, Phone, Mail, MapPin, Building, Calendar, Clock } from 'lucide-react'
+import { X, User, Phone, Mail, MapPin, Building } from 'lucide-react'
 import { formatDate } from '@/utils'
 
 interface CustomerDetailsModalProps {

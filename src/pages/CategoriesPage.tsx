@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { categoriesApi } from '@/services/api'
 import { Category } from '@/types'
@@ -12,17 +12,17 @@ import {
   FolderOpen,
   ChevronRight,
   ChevronDown,
-  Move,
+  // Move,
   Check,
   X,
   Download,
   Upload,
   Package,
   CheckSquare,
-  Square,
+  // Square,
   AlertTriangle
 } from 'lucide-react'
-import { formatDate, searchIncludes, exportCategoriesToCSV, parseCategoriesFromCSV, validateCategoryData, extractCategoriesFromProductsCSV } from '@/utils'
+import { searchIncludes, exportCategoriesToCSV, parseCategoriesFromCSV, validateCategoryData, extractCategoriesFromProductsCSV } from '@/utils'
 import LoadingSpinner from '@/components/LoadingSpinner'
 import CategoryModal from '@/components/CategoryModal'
 import CategoryDetailsModal from '@/components/CategoryDetailsModal'
@@ -39,9 +39,9 @@ const CategoriesPage: React.FC = () => {
   const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null)
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set())
   const [selectedCategories, setSelectedCategories] = useState<Set<string>>(new Set())
-  const [draggedCategory, setDraggedCategory] = useState<Category | null>(null)
+  // const [draggedCategory, setDraggedCategory] = useState<Category | null>(null)
   const [dragOverCategory, setDragOverCategory] = useState<string | null>(null)
-  const [isDragMode, setIsDragMode] = useState(false)
+  // const [isDragMode, setIsDragMode] = useState(false)
   const [importFile, setImportFile] = useState<File | null>(null)
   const [isImporting, setIsImporting] = useState(false)
   const [showCategoryProductsModal, setShowCategoryProductsModal] = useState(false)
@@ -195,7 +195,7 @@ const CategoriesPage: React.FC = () => {
   const handleDragStart = (category: Category, event: React.DragEvent) => {
     if (selectedCategories.has(category.id)) {
       // Dragging multiple selected categories
-      setDraggedCategory(category)
+      // setDraggedCategory(category)
       event.dataTransfer.effectAllowed = 'move'
       event.dataTransfer.setData('text/plain', JSON.stringify({
         categoryIds: Array.from(selectedCategories),
@@ -203,7 +203,7 @@ const CategoriesPage: React.FC = () => {
       }))
     } else {
       // Dragging single category
-      setDraggedCategory(category)
+      // setDraggedCategory(category)
       event.dataTransfer.effectAllowed = 'move'
       event.dataTransfer.setData('text/plain', JSON.stringify({
         categoryIds: [category.id],
@@ -232,7 +232,7 @@ const CategoriesPage: React.FC = () => {
     
     try {
       const data = JSON.parse(event.dataTransfer.getData('text/plain'))
-      const { categoryIds, sourceCategory } = data
+      const { categoryIds } = data
       
       // Don't allow dropping on the same category or its children
       if (categoryIds.includes(targetCategory.id)) {
@@ -241,13 +241,13 @@ const CategoriesPage: React.FC = () => {
       }
 
       // Check if trying to drop a parent category on its own child
-      const sourceCategories = categoryIds.map(id => categories?.find(c => c.id === id)).filter(Boolean)
-      const hasParentCategory = sourceCategories.some(cat => !cat?.parent_id)
+      const sourceCategories = categoryIds.map((id: string) => categories?.find(c => c.id === id)).filter(Boolean)
+      const hasParentCategory = sourceCategories.some((cat: any) => !cat?.parent_id)
       
       if (hasParentCategory) {
         // Check if any of the source parent categories is the target's parent
         const targetCategoryData = categories?.find(c => c.id === targetCategory.id)
-        if (targetCategoryData?.parent_id && sourceCategories.some(cat => cat?.id === targetCategoryData.parent_id)) {
+        if (targetCategoryData?.parent_id && sourceCategories.some((cat: any) => cat?.id === targetCategoryData.parent_id)) {
           toast.error('لا يمكن نقل التصنيف الأساسي إلى تصنيف فرعي منه')
           return
         }
@@ -283,11 +283,11 @@ const CategoriesPage: React.FC = () => {
     setSelectedCategories(new Set())
   }
 
-  const selectAllCategories = () => {
-    if (categories) {
-      setSelectedCategories(new Set(categories.map(cat => cat.id)))
-    }
-  }
+  // const selectAllCategories = () => {
+  //   if (categories) {
+  //     setSelectedCategories(new Set(categories.map(cat => cat.id)))
+  //   }
+  // }
 
   const handleBulkDelete = () => {
     if (selectedCategories.size === 0) {

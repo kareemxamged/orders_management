@@ -1,5 +1,5 @@
 import React from 'react'
-import { X, User, Phone, Mail, MapPin, Calendar, Package, DollarSign, FileText } from 'lucide-react'
+import { X, User, Calendar, Package, DollarSign, FileText } from 'lucide-react'
 import { Order } from '@/types'
 import { formatDate, formatCurrency, getOrderStatusColor, getOrderStatusText } from '@/utils'
 

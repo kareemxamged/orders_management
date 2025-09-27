@@ -5,7 +5,7 @@ import { z } from 'zod'
 import { useQuery } from '@tanstack/react-query'
 import { ordersApi, productsApi, customersApi, discountsApi } from '@/services/api'
 import { useQueryClient } from '@tanstack/react-query'
-import { CreateOrderForm, Product, Customer, Discount } from '@/types'
+import { CreateOrderForm, Customer } from '@/types'
 import {
   Plus,
   Trash2,
@@ -17,8 +17,8 @@ import {
   Percent,
   Save
 } from 'lucide-react'
-import { formatCurrency, calculateDiscount } from '@/utils'
-import LoadingSpinner from '@/components/LoadingSpinner'
+import { formatCurrency } from '@/utils'
+// import LoadingSpinner from '@/components/LoadingSpinner'
 import toast from 'react-hot-toast'
 
 const createOrderSchema = z.object({
@@ -111,7 +111,7 @@ const CreateOrderPage: React.FC = () => {
   })
 
   const watchedItems = watch('items')
-  const watchedCustomer = watch('customer')
+  // const watchedCustomer = watch('customer')
   const watchedDiscountType = watch('discount_type')
   const watchedDiscountValue = watch('discount_value')
 
@@ -179,16 +179,16 @@ const CreateOrderPage: React.FC = () => {
     }
   }
 
-  const handleDiscountCodeChange = (code: string) => {
-    // In a real app, you would validate the discount code with the API
-    if (code === 'WELCOME10') {
-      setDiscountAmount(calculateDiscount(subtotal, 'percentage', 10))
-    } else if (code === 'SAVE50') {
-      setDiscountAmount(calculateDiscount(subtotal, 'fixed', 50))
-    } else {
-      setDiscountAmount(0)
-    }
-  }
+  // const handleDiscountCodeChange = (code: string) => {
+  //   // In a real app, you would validate the discount code with the API
+  //   if (code === 'WELCOME10') {
+  //     setDiscountAmount(calculateDiscount(subtotal, 'percentage', 10))
+  //   } else if (code === 'SAVE50') {
+  //     setDiscountAmount(calculateDiscount(subtotal, 'fixed', 50))
+  //   } else {
+  //     setDiscountAmount(0)
+  //   }
+  // }
 
   const onSubmit = async (data: CreateOrderFormData) => {
     try {

@@ -4,10 +4,10 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useQuery } from '@tanstack/react-query'
 import { X, Plus, Trash2, User, Package, DollarSign, FileText, Percent, Search } from 'lucide-react'
-import { CreateOrderForm, Product, Customer, Discount } from '@/types'
+import { CreateOrderForm, Customer } from '@/types'
 import { productsApi, customersApi, discountsApi } from '@/services/api'
 import { formatCurrency } from '@/utils'
-import toast from 'react-hot-toast'
+// import toast from 'react-hot-toast'
 
 const createOrderSchema = z.object({
   customer: z.object({
@@ -42,7 +42,7 @@ const CreateOrderModal: React.FC<CreateOrderModalProps> = ({
   onSave,
   isLoading = false
 }) => {
-  const [discountType, setDiscountType] = useState<'none' | 'coupon' | 'fixed' | 'percentage'>('none')
+  // const [discountType, setDiscountType] = useState<'none' | 'coupon' | 'fixed' | 'percentage'>('none')
   const [customerSearchTerm, setCustomerSearchTerm] = useState('')
   const [showCustomerSearch, setShowCustomerSearch] = useState(false)
   const customerSearchRef = useRef<HTMLDivElement>(null)
@@ -96,7 +96,7 @@ const CreateOrderModal: React.FC<CreateOrderModalProps> = ({
   })
 
   const watchedItems = watch('items')
-  const watchedCustomer = watch('customer')
+  // const watchedCustomer = watch('customer')
   const watchedDiscountType = watch('discount_type')
   const watchedDiscountValue = watch('discount_value')
 
@@ -188,7 +188,7 @@ const CreateOrderModal: React.FC<CreateOrderModalProps> = ({
     reset()
     setCustomerSearchTerm('')
     setShowCustomerSearch(false)
-    setDiscountType('none')
+    // setDiscountType('none')
     onClose()
   }
 
@@ -446,7 +446,7 @@ const CreateOrderModal: React.FC<CreateOrderModalProps> = ({
                       value="none"
                       checked={watchedDiscountType === 'none'}
                       onChange={(e) => {
-                        setDiscountType(e.target.value as any)
+                        // setDiscountType(e.target.value as any)
                         setValue('discount_type', e.target.value as any)
                       }}
                       className="ml-2"
@@ -459,7 +459,7 @@ const CreateOrderModal: React.FC<CreateOrderModalProps> = ({
                       value="coupon"
                       checked={watchedDiscountType === 'coupon'}
                       onChange={(e) => {
-                        setDiscountType(e.target.value as any)
+                        // setDiscountType(e.target.value as any)
                         setValue('discount_type', e.target.value as any)
                       }}
                       className="ml-2"
@@ -472,7 +472,7 @@ const CreateOrderModal: React.FC<CreateOrderModalProps> = ({
                       value="fixed"
                       checked={watchedDiscountType === 'fixed'}
                       onChange={(e) => {
-                        setDiscountType(e.target.value as any)
+                        // setDiscountType(e.target.value as any)
                         setValue('discount_type', e.target.value as any)
                       }}
                       className="ml-2"
@@ -485,7 +485,7 @@ const CreateOrderModal: React.FC<CreateOrderModalProps> = ({
                       value="percentage"
                       checked={watchedDiscountType === 'percentage'}
                       onChange={(e) => {
-                        setDiscountType(e.target.value as any)
+                        // setDiscountType(e.target.value as any)
                         setValue('discount_type', e.target.value as any)
                       }}
                       className="ml-2"

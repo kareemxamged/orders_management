@@ -1,9 +1,9 @@
 import React from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { categoriesApi, productsApi } from '@/services/api'
+import { categoriesApi } from '@/services/api'
 import { supabase } from '@/services/supabase'
 import { Category } from '@/types'
-import { X, Folder, FolderOpen, Calendar, Hash, Tag, Package } from 'lucide-react'
+import { X, Folder, FolderOpen, Hash, Tag, Package } from 'lucide-react'
 import { formatDate } from '@/utils'
 
 interface CategoryDetailsModalProps {
